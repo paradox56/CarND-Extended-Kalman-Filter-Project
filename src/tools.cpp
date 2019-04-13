@@ -4,6 +4,8 @@
 using Eigen::VectorXd;
 using Eigen::MatrixXd;
 using std::vector;
+using std::cout;
+using std::endl;
 
 Tools::Tools() {}
 
@@ -22,7 +24,7 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
 
   if (estimations.size() == 0 && estimations.size() != ground_truth.size()){
     cout << "Error: Dimension Mismatch between Ground Truth and Estimations, or empty Estimations" << endl;
-    return rmse;
+    return rmse_vec;
     }
 
   for (int i=0; i < estimations.size(); ++i) {
@@ -32,10 +34,10 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
     }
 
     // Calculate Mean
-    rmse_vec = rmse/estimations.size();
+    rmse_vec = rmse_vec/estimations.size();
 
     // calculate the squared root
-    rmse_vec = rmse.array().sqrt();
+    rmse_vec = rmse_vec.array().sqrt();
 
     // return the result
     return rmse_vec;
@@ -63,7 +65,7 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
   // check division by zero
   if (fabs(c1) < 0.00001) {
     cout << "Error: Division by zero" << endl;
-    return Hj;
+    return Hj_mat;
   }
 
   // compute the Jacobian matrix
