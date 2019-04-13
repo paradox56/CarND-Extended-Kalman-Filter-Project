@@ -29,7 +29,7 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
 
   for (int i=0; i < estimations.size(); ++i) {
     VectorXd diff = estimations[i]-ground_truth[i];
-    diff = (diff.array()*diff.array())/4; //Normalized Square
+    diff = (diff.array()*diff.array());
     rmse_vec += diff;
     }
 
@@ -37,7 +37,7 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
     rmse_vec = rmse_vec/estimations.size();
 
     // calculate the squared root
-    rmse_vec = rmse_vec.array().sqrt();
+    rmse_vec = sqrt(rmse_vec.array());
 
     // return the result
     return rmse_vec;
@@ -63,8 +63,16 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
   float c3 = (c1*c2);
 
   // check division by zero
-  if (fabs(c1) < 0.00001) {
-    cout << "Error: Division by zero" << endl;
+  if (c1 < 0.00001) {
+    c1 += 0.0001;
+    c2 = sqrt(c1);
+    float c3 = (c1*c2);
+
+    Hj_mat << (px/c2), (py/c2), 0, 0,
+             -(py/c1), (px/c1), 0, 0,
+             py*(vx*py - vy*px)/c3, px*(px*vy - py*vx)/c3, px/c2, py/c2;
+
+
     return Hj_mat;
   }
 

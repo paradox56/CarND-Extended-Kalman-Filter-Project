@@ -1,5 +1,5 @@
 #include "kalman_filter.h"
-#include <math.h>
+
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -21,6 +21,7 @@ void KalmanFilter::Init(VectorXd &x_in, MatrixXd &P_in, MatrixXd &F_in,
   H_ = H_in;
   R_ = R_in;
   Q_ = Q_in;
+
 }
 
 void KalmanFilter::Predict() {
@@ -50,19 +51,26 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
    * TODO: update the state by using Extended Kalman Filter equations
    */
    VectorXd h_(3);
-   VectorXd y;
+   //VectorXd y(3);
 
    // Initialize h function in plolar coordinate
    float rho = sqrt(x_(0)*x_(0) + x_(1)*x_(1));
    float theta = atan2(x_(1),x_(0));
    float rho_dot = (x_(0)*x_(2) + x_(1)*x_(3))/rho;
 
+   // Check if rho goes to zero
+   if (rho < 0.00001){
+     rho = sqrt((x_(0)+0.001)*(x_(0)+0.001) + (x_(1)+0.001)*(x_(1)+0.001));
+   }
+
+
    h_(0) = rho;
    h_(1) = theta;
    h_(2) = rho_dot;
 
+
    // Define Measurement Error
-   y = z - h_;
+   VectorXd y = z - h_;
 
    // Normalization
    while (y(1) > M_PI){
