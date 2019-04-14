@@ -47,11 +47,7 @@ void KalmanFilter::Update(const VectorXd &z) {
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
-  /**
-   * TODO: update the state by using Extended Kalman Filter equations
-   */
    VectorXd h_(3);
-   //VectorXd y(3);
 
    // Initialize h function in plolar coordinate
    float rho = sqrt(x_(0)*x_(0) + x_(1)*x_(1));
@@ -73,12 +69,15 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
    VectorXd y = z - h_;
 
    // Normalization
-   while (y(1) > M_PI){
-     y(1) -= 2*M_PI;
-   }
+   //if (y(1) > M_PI){
+  //   y(1) = fmod(y(1),2*M_PI);
+   //}
 
-   while (y(1) < -M_PI){
-     y(1) += 2*M_PI;
+   //while (y(1) < -M_PI){
+    // y(1) += 2*M_PI;
+   //}
+   if (y(1) > M_PI || y(1) <- M_PI){
+     y(1) = fmod(y(1),2*M_PI);
    }
 
    MatrixXd Ht = H_.transpose();
